@@ -1,0 +1,31 @@
+- hosts: localhost
+  tasks:
+    - name: "Install HTTPD package"
+      package:
+           name:
+                - "httpd"
+                - "php"
+           state: present
+      register: p
+    
+    - debug:
+          var: p
+
+    - name: "Copy webpages"
+      copy:
+           src: index.php
+           dest: "/var/www/html/"
+      register: c
+
+    - debug:
+           var: c
+        
+    - name: "Restart HTTPD services"
+      service:
+             name: "httpd"
+             state: restarted
+      when: c.changed == true
+      register: s     
+    
+    - debug:
+            var: s
